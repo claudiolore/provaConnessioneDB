@@ -14,71 +14,111 @@ namespace dal
 {
     public class ProdottoDaoImpl : ProdottoDao
     {
+        private string connectionString = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=prova;Integrated Security=True;Encrypt=False";
+
+//--------------------------------------------------------------------------------------
         public Prodotto Create(int id, string nome, decimal prezzo, string categoria)
         {
             return new Prodotto();
         }
-
+//--------------------------------------------------------------------------------------
         public Prodotto Delete(int id)
         {
             throw new NotImplementedException();
         }
+//--------------------------------------------------------------------------------------
 
         public List<Prodotto> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<Prodotto> listProdotti = new();
+                var query = "SELECT * FROM Prodotti";
+
+                using(var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    Console.WriteLine("Connessione aperta con successo");
+
+                    var command = new SqlCommand(query,connection);
+                    var reader = command.ExecuteReader();
+
+                    while (reader.Read()) 
+                    {
+                        var p = new Prodotto();
+                        
+                        p.Id = (int)reader[0];   
+                        p.Nome = (string)reader[1] ?? string.Empty;
+                        p.Prezzo = (decimal)reader[2];
+                        p.Categoria = (string)reader[3] ?? string.Empty;
+
+                        listProdotti.Add(p);
+                    }
+                    connection.Close();
+                }
+                return listProdotti;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                return null;
+            }
+            finally
+            {
+                Console.WriteLine("Esecuzione completata.");
+            }
         }
 
+//--------------------------------------------------------------------------------------
         public Prodotto ReadById(int id)
         {
-
-
-                try
+            try
+            {
+                var connectionString = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=prova;Integrated Security=True;Encrypt=False";
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    var connectionString = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=prova;Integrated Security=True;Encrypt=False";
-                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    // Open the connection
+                    connection.Open();
+                    Console.WriteLine("Connessione aperta con successo.");
+
+                    // Create the SQL command
+                    string sqlQuery = "SELECT Id, Nome, Prezzo, Categoria FROM Prodotti WHERE Id = @Id";
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
-                        // Open the connection
-                        connection.Open();
-                        Console.WriteLine("Connessione aperta con successo.");
+                        // Add the parameter to the SQL command
+                        command.Parameters.AddWithValue("@Id", id);
 
-                        // Create the SQL command
-                        string sqlQuery = "SELECT Id, Nome, Prezzo, Categoria FROM Prodotti WHERE Id = @Id";
-                        using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                        // Execute the command and read the data
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            // Add the parameter to the SQL command
-                            command.Parameters.AddWithValue("@Id", id);
-
-                            // Execute the command and read the data
-                            using (SqlDataReader reader = command.ExecuteReader())
+                            if (reader.Read())
                             {
-                                if (reader.Read())
+                                Prodotto p = new Prodotto
                                 {
-                                    Prodotto p = new Prodotto
-                                    {
-                                        Id = reader.GetInt32(0),
-                                        Nome = reader.GetString(1),
-                                        Prezzo = reader.GetDecimal(2),
-                                        Categoria = reader.GetString(3)
-                                    };
-                                    return p;
-                                }
+                                    Id = reader.GetInt32(0),
+                                    Nome = reader.GetString(1),
+                                    Prezzo = reader.GetDecimal(2),
+                                    Categoria = reader.GetString(3)
+                                };
+                                return p;
                             }
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Exception: {ex.Message}");
-                    return null;
-                }
-                finally
-                {
-                    Console.WriteLine("Esecuzione completata.");
-                }
-                return null; // Return null if no product is found
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                return null;
+            }
+            finally
+            {
+                Console.WriteLine("Esecuzione completata.");
+            }
+            return null; // Return null if no product is found
         }
 
+//--------------------------------------------------------------------------------------
         public Prodotto Update(int id)
         {
             throw new NotImplementedException();
