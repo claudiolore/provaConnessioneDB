@@ -60,7 +60,7 @@ namespace dal
             }
             finally
             {
-                Console.WriteLine("Esecuzione completata.");
+                Console.WriteLine("Esecuzione completata dajeeeeeeeee.");
             }
         }
         //--------------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ namespace dal
             }
             finally
             {
-                Console.WriteLine("Esecuzione completata.");
+                Console.WriteLine("Esecuzione completata. daghe");
             }
         }
 
@@ -146,9 +146,9 @@ namespace dal
             }
             finally
             {
-                Console.WriteLine("Esecuzione completata.");
+                Console.WriteLine("Esecuzione completata. daje sempre forte");
             }
-            return null; // Return null if no product is found
+            return null;
         }
 
 //--------------------------------------------------------------------------------------
@@ -193,7 +193,7 @@ namespace dal
             }
             finally
             {
-                Console.WriteLine("Esecuzione completata.");
+                Console.WriteLine("Esecuzione completata. dage");
             }
         }
 
