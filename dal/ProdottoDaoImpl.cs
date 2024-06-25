@@ -58,10 +58,6 @@ namespace dal
                 Console.WriteLine($"Exception: {ex.Message}");
                 return null;
             }
-            finally
-            {
-                Console.WriteLine("Esecuzione completata dajeeeeeeeee.");
-            }
         }
         //--------------------------------------------------------------------------------------
 
@@ -99,10 +95,6 @@ namespace dal
             {
                 Console.WriteLine($"Exception: {ex.Message}");
                 return null;
-            }
-            finally
-            {
-                Console.WriteLine("Esecuzione completata. daghe");
             }
         }
 
@@ -144,18 +136,59 @@ namespace dal
                 Console.WriteLine($"Exception: {ex.Message}");
                 return null;
             }
-            finally
-            {
-                Console.WriteLine("Esecuzione completata. daje sempre forte");
-            }
             return null;
         }
 
-//--------------------------------------------------------------------------------------
-        public Prodotto Update(int id)
+        //--------------------------------------------------------------------------------------
+        public Prodotto Update(int id, string nome, decimal prezzo, string categoria)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    // Open the connection
+                    connection.Open();
+                    Console.WriteLine("Connessione aperta con successo.");
+
+                    // Create the SQL command
+                    string sqlQuery = "UPDATE Prodotti SET Nome = @Nome, Prezzo = @Prezzo, Categoria = @Categoria WHERE Id = @Id";
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        // Add the parameters to the SQL command
+                        command.Parameters.AddWithValue("@Id", id);
+                        command.Parameters.AddWithValue("@Nome", nome);
+                        command.Parameters.AddWithValue("@Prezzo", prezzo);
+                        command.Parameters.AddWithValue("@Categoria", categoria);
+
+                        // Execute the command
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Prodotto aggiornato con successo.");
+                            return new Prodotto
+                            {
+                                Id = id,
+                                Nome = nome,
+                                Prezzo = prezzo,
+                                Categoria = categoria
+                            };
+                        }
+                        else
+                        {
+                            Console.WriteLine("Nessun prodotto trovato con l'ID specificato.");
+                            return null;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                return null;
+            }
         }
+
         //--------------------------------------------------------------------------------------
         public Prodotto Delete(int id)
         {
@@ -190,10 +223,6 @@ namespace dal
             {
                 Console.WriteLine($"Exception: {ex.Message}");
                 return null;
-            }
-            finally
-            {
-                Console.WriteLine("Esecuzione completata. dage");
             }
         }
 
