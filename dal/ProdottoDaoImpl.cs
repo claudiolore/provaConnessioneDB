@@ -160,13 +160,49 @@ namespace dal
         {
             throw new NotImplementedException();
         }
-//--------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------
         public Prodotto Delete(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    Console.WriteLine("Connessione aperta con successo.");
+
+                    string sqlQuery = "DELETE FROM Prodotti WHERE Id = @Id";
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@Id", id);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Prodotto eliminato con successo.");
+                            return new Prodotto { Id = id };
+                        }
+                        else
+                        {
+                            Console.WriteLine("Nessun prodotto trovato con l'ID specificato.");
+                            return null;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                return null;
+            }
+            finally
+            {
+                Console.WriteLine("Esecuzione completata.");
+            }
         }
-//--------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------
+
+        //--------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------
     }
 }
