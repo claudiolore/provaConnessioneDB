@@ -16,17 +16,54 @@ namespace dal
     {
         private string connectionString = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=prova;Integrated Security=True;Encrypt=False";
 
-//--------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------
         public Prodotto Create(int id, string nome, decimal prezzo, string categoria)
         {
-            return new Prodotto();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    Console.WriteLine("Connessione aperta con successo");
+
+                    string query = "INSERT INTO Prodotti (Id, Nome, Prezzo, Categoria) VALUES (@Id, @Nome, @Prezzo, @Categoria)";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Id", id);
+                        command.Parameters.AddWithValue("@Nome", nome);
+                        command.Parameters.AddWithValue("@Prezzo", prezzo);
+                        command.Parameters.AddWithValue("@Categoria", categoria);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            return new Prodotto
+                            {
+                                Id = id,
+                                Nome = nome,
+                                Prezzo = prezzo,
+                                Categoria = categoria
+                            };
+                        }
+                        else
+                        {
+                            throw new Exception("No rows affected.");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                return null;
+            }
+            finally
+            {
+                Console.WriteLine("Esecuzione completata.");
+            }
         }
-//--------------------------------------------------------------------------------------
-        public Prodotto Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-//--------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------
 
         public List<Prodotto> GetAll()
         {
@@ -123,5 +160,13 @@ namespace dal
         {
             throw new NotImplementedException();
         }
+//--------------------------------------------------------------------------------------
+        public Prodotto Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
     }
 }
