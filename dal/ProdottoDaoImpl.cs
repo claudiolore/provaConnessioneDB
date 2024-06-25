@@ -114,18 +114,14 @@ namespace dal
                 var connectionString = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=prova;Integrated Security=True;Encrypt=False";
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    // Open the connection
                     connection.Open();
                     Console.WriteLine("Connessione aperta con successo.");
 
-                    // Create the SQL command
                     string sqlQuery = "SELECT Id, Nome, Prezzo, Categoria FROM Prodotti WHERE Id = @Id";
                     using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
-                        // Add the parameter to the SQL command
                         command.Parameters.AddWithValue("@Id", id);
 
-                        // Execute the command and read the data
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.Read())
